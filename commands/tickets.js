@@ -11,6 +11,7 @@ const client = new Client({
 
 let response;
 let service;
+let ticketChannelNumber = 0;
 
 client.once('ready', () => {
     console.log('/tickets is available!');
@@ -38,21 +39,21 @@ client.on('interactionCreate', async interaction => {
                     {
                         label: 'Get a brawler boosted to rank 30',
                         value: 'rank30',
-                        emoji: '1267166543490449518',
+                        emoji: '1268684339408011365',
                     },
                     {
                         label: 'Get a brawler boosted to rank 35',
                         value: 'rank35',
-                        emoji: '1267164453926080553',
+                        emoji: '1268684199154421891',
                     },
                     {
                         label: 'Get a Legendary rank',
-                        emoji: '1267168222126538803',
+                        emoji: '1261680637501509632',
                         value: 'rank_legendary',
                     },
                     {
                         label: 'Get a Master rank',
-                        emoji: '1267168822532767755',
+                        emoji: '1268683177174765639',
                         value: 'rank_masters',
                     }
                 ]);
@@ -156,8 +157,9 @@ client.on('interactionCreate', async interaction => {
 
             // Création du salon textuel pour le ticket dans la catégorie spécifiée
             const guild = interaction.guild;
+            ticketChannelNumber = ticketChannelNumber +1;
             const ticketChannel = await guild.channels.create({
-                name: `ticket-${interaction.id}`,
+                name: `ticket-${ticketChannelNumber}`,
                 type: ChannelType.GuildText,
                 parent: ticketscatId,
                 permissionOverwrites: [
