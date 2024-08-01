@@ -1,5 +1,5 @@
-const { Client, GatewayIntentBits, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, ButtonBuilder, ButtonStyle, InteractionType, EmbedBuilder, PermissionsBitField } = require('discord.js');
-const { token, adminRoleId, accountChannelId, addAccountChannelId } = require('../config.json');
+const { Client, GatewayIntentBits, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, ButtonBuilder, ButtonStyle, InteractionType, EmbedBuilder, PermissionsBitField, ChannelType } = require('discord.js');
+const { token, adminRoleId, accountChannelId, addAccountChannelId, ticketscatId } = require('../config.json');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
@@ -119,6 +119,13 @@ client.on('interactionCreate', async interaction => {
                 client.imageAttachment = null;
             }
 
+            const button = new ButtonBuilder()
+                .setCustomId('buyButton')
+                .setLabel('Acheter')
+                .setStyle(ButtonStyle.Success);
+
+            const row = new ActionRowBuilder().addComponents(button);
+
             const targetChannel = client.channels.cache.get(accountChannelId);
             if (!targetChannel) {
                 console.error('Salon cible introuvable.');
@@ -126,12 +133,76 @@ client.on('interactionCreate', async interaction => {
                 return;
             }
 
-            await targetChannel.send({ embeds: [embed] });
+            await targetChannel.send({ embeds: [embed], components: [row] });
 
             await interaction.reply({ content: 'Votre récapitulatif a été envoyé dans le salon désigné.', ephemeral: true });
         } catch (error) {
             console.error('Erreur lors de l\'envoi du récapitulatif:', error);
             await interaction.reply({ content: 'Une erreur s\'est produite lors de l\'envoi du récapitulatif. Veuillez réessayer.', ephemeral: true });
+        }
+    } else if (interaction.isButton() && interaction.customId === 'buyButton') {
+        try {
+            const guild = interaction.guild;
+
+            // Création d'un nouveau salon ticket
+            const buyer = interaction.user.displayName;
+            const ticketChannel = await guild.channels.create({
+                name: `account-${interaction.id}`,
+                type: ChannelType.GuildText,
+                parent: ticketscatId,
+                permissionOverwrites: [
+                    {
+                        id: guild.id,
+                        deny: [PermissionsBitField.Flags.ViewChannel],
+                    },
+                    {
+                        id: interaction.user.id,
+                        allow: [
+                            PermissionsBitField.Flags.ViewChannel,
+                            PermissionsBitField.Flags.SendMessages,
+                            PermissionsBitField.Flags.ReadMessageHistory
+                        ],
+                    },
+                    {
+                        id: adminRoleId,
+                        allow: [
+                            PermissionsBitField.Flags.ViewChannel,
+                            PermissionsBitField.Flags.SendMessages,
+                            PermissionsBitField.Flags.ReadMessageHistory
+                        ],
+                    },
+                ],
+            });
+
+            console.log('Nouveau salon créé');
+
+            // Création de l'embed pour le récapitulatif
+            const recapEmbed = new EmbedBuilder()
+                .setColor('#FFBB00')
+                .setTitle('Ticket Summary')
+                .setDescription(buyer)
+                .addFields(
+                    { name: 'Service', value: 'Purchase Account', inline: false },
+                    { name: ':moneybag: Price', value: interaction.message.embeds[0].fields[0].value, inline: true },
+                    { name: '<:bstrophy:1267429839573487782> Trophies', value: interaction.message.embeds[0].fields[1].value, inline: true },
+                    { name: '<:rank35:1267164453926080553> Ranks 35', value: interaction.message.embeds[0].fields[2].value, inline: true },
+                    { name: '<:rank30:1267166543490449518> Ranks 30', value: interaction.message.embeds[0].fields[3].value, inline: true }
+                );
+
+
+            // Ajoutez l'image si elle est présente dans l'embed initial
+            if (interaction.message.embeds[0].image) {
+                recapEmbed.setImage(interaction.message.embeds[0].image.url);
+            }
+
+            // Envoi du message récapitulatif dans le nouveau salon textuel
+            await ticketChannel.send({ embeds: [recapEmbed] });
+
+            // Envoi d'un message de confirmation dans le canal original
+            await interaction.reply({ content: `✅ Vous avez choisi d'acheter ce compte. Vous pouvez suivre votre demande dans <#${ticketChannel.id}>.`, ephemeral: true });
+        } catch (error) {
+            console.error('Erreur lors de la création du salon de ticket:', error);
+            await interaction.reply({ content: 'Une erreur s\'est produite lors de la création du salon de ticket. Veuillez réessayer.', ephemeral: true });
         }
     }
 });
