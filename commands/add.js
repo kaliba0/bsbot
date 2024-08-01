@@ -7,6 +7,8 @@ client.once('ready', () => {
     console.log('/add is available');
 });
 
+let addFriendsChannelNumber = 0;
+
 client.on('interactionCreate', async interaction => {
     if (interaction.isCommand()) {
         if (interaction.commandName === 'add') {
@@ -68,9 +70,10 @@ client.on('interactionCreate', async interaction => {
             const [playerName, playerRank, playerPrice] = selectedValue.split(' - ');
 
             // Création du salon textuel pour le ticket dans la catégorie spécifiée
+            addFriendsChannelNumber = addFriendsChannelNumber +1;
             const guild = interaction.guild;
             const ticketChannel = await guild.channels.create({
-                name: `add-friend-${interaction.id}`,
+                name: `add-friend-${addFriendsChannelNumber}`,
                 type: ChannelType.GuildText,
                 parent: ticketscatId,
                 permissionOverwrites: [
@@ -105,9 +108,9 @@ client.on('interactionCreate', async interaction => {
                 .setTitle('Ticket Summary')
                 .addFields(
                     { name: 'Service', value: 'Add Friend', inline: false },
-                    { name: 'Joueur', value: playerName, inline: true },
-                    { name: 'Rang', value: playerRank, inline: true },
-                    { name: 'Prix', value: playerPrice, inline: true }
+                    { name: 'Player', value: playerName, inline: true },
+                    { name: 'Trophy', value: playerRank, inline: true },
+                    { name: 'Price', value: playerPrice, inline: true }
                     
                 );
 
