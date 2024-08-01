@@ -7,6 +7,8 @@ client.once('ready', () => {
     console.log('/account is available');
 });
 
+let accountChannelNumber = 0;
+
 client.on('interactionCreate', async interaction => {
     if (interaction.isCommand()) {
         if (interaction.commandName === 'account') {
@@ -103,9 +105,9 @@ client.on('interactionCreate', async interaction => {
                 .setColor('#FFBB00')
                 .addFields(
                     { name: ':moneybag: Price', value: `${price}€`, inline: true },
-                    { name: '<:bstrophy:1267429839573487782> Trophies', value: `${trophies} <:bstrophy:1267429839573487782>`, inline: true },
-                    { name: '<:rank35:1267164453926080553> Ranks 35', value: `${rank35}`, inline: true },
-                    { name: '<:rank30:1267166543490449518> Ranks 30', value: `${rank30}`, inline: true }
+                    { name: '<:bstrophy:1268683945608741116> Trophies', value: `${trophies} <:bstrophy:1268683945608741116>`, inline: true },
+                    { name: '<:rank35:1268684199154421891> Ranks 35', value: `${rank35}`, inline: true },
+                    { name: '<:rank30:1268684339408011365> Ranks 30', value: `${rank30}`, inline: true }
                 );
 
             if (description) {
@@ -145,9 +147,10 @@ client.on('interactionCreate', async interaction => {
             const guild = interaction.guild;
 
             // Création d'un nouveau salon ticket
+            accountChannelNumber = accountChannelNumber + 1;
             const buyer = interaction.user.displayName;
             const ticketChannel = await guild.channels.create({
-                name: `account-${interaction.id}`,
+                name: `account-${accountChannelNumber}`,
                 type: ChannelType.GuildText,
                 parent: ticketscatId,
                 permissionOverwrites: [
@@ -184,9 +187,9 @@ client.on('interactionCreate', async interaction => {
                 .addFields(
                     { name: 'Service', value: 'Purchase Account', inline: false },
                     { name: ':moneybag: Price', value: interaction.message.embeds[0].fields[0].value, inline: true },
-                    { name: '<:bstrophy:1267429839573487782> Trophies', value: interaction.message.embeds[0].fields[1].value, inline: true },
-                    { name: '<:rank35:1267164453926080553> Ranks 35', value: interaction.message.embeds[0].fields[2].value, inline: true },
-                    { name: '<:rank30:1267166543490449518> Ranks 30', value: interaction.message.embeds[0].fields[3].value, inline: true }
+                    { name: '<:bstrophy:1268683945608741116> Trophies', value: interaction.message.embeds[0].fields[1].value, inline: true },
+                    { name: '<:rank35:1268684199154421891> Ranks 35', value: interaction.message.embeds[0].fields[2].value, inline: true },
+                    { name: '<:rank30:1268684339408011365> Ranks 30', value: interaction.message.embeds[0].fields[3].value, inline: true }
                 );
 
 
