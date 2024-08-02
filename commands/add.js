@@ -62,7 +62,8 @@ client.on('interactionCreate', async interaction => {
 
             const row = new ActionRowBuilder().addComponents(selectMenu);
 
-            await interaction.reply({ embeds: [embed], components: [row] });
+            const addFriendChannel = await client.channels.fetch(addFriendChannelId);
+            await addFriendChannel.send({ embeds: [embed], components: [row] });
         }
     } else if (interaction.isStringSelectMenu()) {
         if (interaction.customId === 'select_player') {
