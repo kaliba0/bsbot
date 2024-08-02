@@ -37,6 +37,10 @@ const commands = [
         name: 'add',
         description: 'Add some players to help you in the game',
     },
+    {
+        name: 'dev',
+        description: 'Need a dev for anything ? Contact me !',
+    },
 ];
 
 const rest = new REST({ version: '10' }).setToken(token);
