@@ -60,10 +60,11 @@ client.on('interactionCreate', async interaction => {
 
             const row = new ActionRowBuilder().addComponents(selectMenu);
 
-            await interaction.reply({
-                embeds: [embed],
-                components: [row]
-            });
+            
+            const addTicketChannel = await client.channels.fetch(ticketChannelId);
+            await addTicketChannel.send({ embeds: [embed], components: [row] });
+
+
         } else if (interaction.commandName === 'ticket' && interaction.options.getSubcommand() === 'close') {
             // Vérifiez si l'utilisateur a le rôle admin
             if (!interaction.member.roles.cache.has(adminRoleId)) {
