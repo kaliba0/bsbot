@@ -1,13 +1,31 @@
 {
-    "token": "", // Le token du bot 
-    "clientId": "", // L'ID de l'application
-    "guildId": "", // L'ID du serveur 
-    "adminRoleId": "", // L'ID du rôle administrateur,
-    "ticketscatId": "", // L'ID de la catégorie ou les tickets seront créés
-    "accountChannelId": "", // L'ID du salon dans lequel les comptes seront mis en ventes.
-    "addAccountChannelId": "", // L'ID du salon dans lequel les admlins utilisent la commande /account pour mettre en vente un compte
-    "addFriendChannelId": "", // L'ID du salon dans lequel les joueurs peuvent ajouter les joueurs
-    "ticketChannelId": "", // L'ID du salon dans lequel les utilisateurs peuvent ouvrir un ticket
+    // Le token du bot 
+    "token": "", 
+    
+    // L'ID de l'application
+    "clientId": "", 
+    
+    // L'ID du serveur 
+    "guildId": "", 
+    
+    // L'ID du rôle administrateur,
+    "adminRoleId": "", 
+    
+    // L'ID de la catégorie ou les tickets seront créés
+    "ticketscatId": "", 
+    
+    // L'ID du salon dans lequel les comptes seront mis en ventes.
+    "accountChannelId": "", 
+    
+    // L'ID du salon dans lequel les admlins utilisent la commande /account pour mettre en vente un compte
+    "addAccountChannelId": "", 
+    
+    // L'ID du salon dans lequel les joueurs peuvent ajouter les joueurs
+    "addFriendChannelId": "", 
+    
+    // L'ID du salon dans lequel les utilisateurs peuvent ouvrir un ticket
+    "ticketChannelId": "", 
+    
     "devChannelId": "",
     "antterznUserId": ""
 }
