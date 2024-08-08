@@ -23,5 +23,11 @@
 - pm2
 
 ### Étapes
-1. Télecharger le dossier à l'aide de la commande `git clone https://github.com/kaliba0/rafaaa.git`
+1. Télecharger le dossier à l'aide de la commande <br>`git clone https://github.com/kaliba0/rafaaa.git`
+2. Aller dans le dossier : <br>`cd rafaaa`
+3. Completer le dossier config.json avec les informations nécessaires : <br> `nano config.json`
+4. Avec pm2, lancer le script main.js <br> `pm2 start main.js --name "[nom_de_votre_bot]"`
+
+
+
 
