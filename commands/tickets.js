@@ -1,5 +1,20 @@
 const { Client, GatewayIntentBits, ActionRowBuilder, StringSelectMenuBuilder, EmbedBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, InteractionType, ChannelType, PermissionsBitField } = require('discord.js');
-const { token, adminRoleId, ticketscatId, ticketChannelId } = require('../config.json');
+require('dotenv').config();
+const fs = require('fs');
+const path = require('path');
+
+// Modifications pour le .env
+const token = process.env.TOKEN;
+const guildId = process.env.GUILD_ID;
+const clientId = process.env.CLIENT_ID;
+const adminRoleId = process.env.ADMIN_ROLE_ID;
+const ticketscatId = process.env.TICKETS_CAT_ID;
+const accountChannelId = process.env.ACCOUNT_CHANNEL_ID;
+const addAccountChannelId = process.env.ADD_ACCOUNT_CHANNEL_ID;
+const addFriendChannelId = process.env.ADD_FRIEND_CHANNEL_ID;
+const ticketChannelId = process.env.TICKET_CHANNEL_ID;
+const devChannelId = process.env.DEV_CHANNEL_ID;
+const antterznUserId = process.env.ANTTERZN_ID;
 
 const client = new Client({
     intents: [
@@ -12,6 +27,21 @@ const client = new Client({
 let response;
 let service;
 let ticketChannelNumber = 0;
+
+const JSONPath = path.join(__dirname, '../data/brawler.json');
+
+if (!fs.existsSync(JSONPath)) {
+    throw new Error(`Le fichier de brawler n'existe pas : ${JSONPath}`);
+}
+
+fs.readFile(JSONPath, 'utf8', (err, data) => {
+    if (err) {
+        console.error('Erreur de lecture du fichier:', err);
+        return;
+    }
+
+    const brawlers = JSON.parse(data);
+});
 
 client.once('ready', () => {
     console.log('/tickets is available!');
@@ -61,8 +91,7 @@ client.on('interactionCreate', async interaction => {
             const row = new ActionRowBuilder().addComponents(selectMenu);
 
             
-            const addTicketChannel = await client.channels.fetch(ticketChannelId);
-            await addTicketChannel.send({ embeds: [embed], components: [row] });
+            await interaction.reply({ embeds: [embed], components: [row] });
 
 
         } else if (interaction.commandName === 'ticket' && interaction.options.getSubcommand() === 'close') {
@@ -115,9 +144,17 @@ client.on('interactionCreate', async interaction => {
                         .setCustomId('brawler-modal')
                         .setTitle('Brawler Boost Information');
 
-                    const brawlerInput = new TextInputBuilder()
-                        .setCustomId('brawler-input')
-                        .setLabel('Enter the name of the brawler')
+                    const selectMenu = new StringSelectMenuBuilder()
+                        .setCustomId('selectBrawler')
+                        .setPlaceholder('Sélectionnez un brawler')
+                        .addOptions(brawlers.map(brawler => ({
+                            label: brawler.name,
+                            value: brawler.name
+                        })));
+
+                    const actualRankInput = new TextInputBuilder()
+                        .setCustomId('actual_rank-input')
+                        .setLabel('How many trophy do you have on this brawler ?')
                         .setStyle(TextInputStyle.Short);
 
                     const notesInput = new TextInputBuilder()
@@ -126,9 +163,11 @@ client.on('interactionCreate', async interaction => {
                         .setStyle(TextInputStyle.Paragraph)
                         .setRequired(false);
 
-                    const actionRow1 = new ActionRowBuilder().addComponents(brawlerInput);
-                    const actionRow2 = new ActionRowBuilder().addComponents(notesInput);
-                    modal.addComponents(actionRow1, actionRow2);
+                    const actionRow1 = new ActionRowBuilder().addComponents(selectMenu);
+                    const actionRow2 = new ActionRowBuilder().addComponents(actualRankInput);
+                    const actionRow3 = new ActionRowBuilder().addComponents(notesInput);
+                    
+                    modal.addComponents(actionRow1, actionRow2, actionRow3);
 
                     await interaction.showModal(modal);
                 } else if (response === 'legendary_rank' || response === 'master_rank') {
@@ -153,7 +192,8 @@ client.on('interactionCreate', async interaction => {
         }
     } else if (interaction.type === InteractionType.ModalSubmit) {
         if (interaction.customId === 'brawler-modal') {
-            const brawlerName = interaction.fields.getTextInputValue('brawler-input');
+            const brawlerName = interaction.fields.getField('selectBrawler')
+            const acutalTrophy = interaction.fields.getTextInputValue('actual_rank-input')
             const notes = interaction.fields.getTextInputValue('notes-input') || 'No additional notes';
 
             // Création du salon textuel pour le ticket dans la catégorie spécifiée
@@ -195,6 +235,7 @@ client.on('interactionCreate', async interaction => {
                 .setTitle('Ticket Summary')
                 .addFields(
                     { name: 'Brawler', value: brawlerName, inline: true },
+                    { name: 'Trophies', value: acutalTrophy, inline: true },
                     { name: 'Notes', value: notes, inline: true },
                     { name: 'Service', value: service, inline: true },
                 )

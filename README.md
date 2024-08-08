@@ -12,6 +12,7 @@
 - calcul du prix des comptes ou des boosts
 - niveau de départ dans les tickets
 - afficher les stats des joeurs
+- vérification des nombres pour le 'actual_rank-input'
 
 
 ## Installation

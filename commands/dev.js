@@ -1,5 +1,18 @@
 const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js');
-const { token, devChannelId, antterznUserId } = require('../config.json');
+require('dotenv').config();
+
+// Modifications pour le .env
+const token = process.env.TOKEN;
+const guildId = process.env.GUILD_ID;
+const clientId = process.env.CLIENT_ID;
+const adminRoleId = process.env.ADMIN_ROLE_ID;
+const ticketscatId = process.env.TICKETS_CAT_ID;
+const accountChannelId = process.env.ACCOUNT_CHANNEL_ID;
+const addAccountChannelId = process.env.ADD_ACCOUNT_CHANNEL_ID;
+const addFriendChannelId = process.env.ADD_FRIEND_CHANNEL_ID;
+const ticketChannelId = process.env.TICKET_CHANNEL_ID;
+const devChannelId = process.env.DEV_CHANNEL_ID;
+const antterznUserId = process.env.ANTTERZN_ID;
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
