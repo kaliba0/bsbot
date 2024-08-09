@@ -22,6 +22,8 @@
 - discord.js
 - typescript
 - pm2
+- fs
+- path
 
 ### Étapes
 1. Télecharger le dossier à l'aide de la commande <br>`git clone https://github.com/kaliba0/bsbot.git`
