@@ -1,7 +1,5 @@
 const { Client, GatewayIntentBits, ActionRowBuilder, StringSelectMenuBuilder, EmbedBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, InteractionType, ChannelType, PermissionsBitField } = require('discord.js');
 require('dotenv').config();
-const fs = require('fs');
-const path = require('path');
 
 // Modifications pour le .env
 const token = process.env.TOKEN;
@@ -28,20 +26,6 @@ let response;
 let service;
 let ticketChannelNumber = 0;
 
-const JSONPath = path.join(__dirname, '../data/brawler.json');
-
-if (!fs.existsSync(JSONPath)) {
-    throw new Error(`Le fichier de brawler n'existe pas : ${JSONPath}`);
-}
-
-fs.readFile(JSONPath, 'utf8', (err, data) => {
-    if (err) {
-        console.error('Erreur de lecture du fichier:', err);
-        return;
-    }
-
-    const brawlers = JSON.parse(data);
-});
 
 client.once('ready', () => {
     console.log('/tickets is available!');
@@ -144,13 +128,10 @@ client.on('interactionCreate', async interaction => {
                         .setCustomId('brawler-modal')
                         .setTitle('Brawler Boost Information');
 
-                    const selectMenu = new StringSelectMenuBuilder()
+                    const selectMenu = new TextInputBuilder()
                         .setCustomId('selectBrawler')
-                        .setPlaceholder('Sélectionnez un brawler')
-                        .addOptions(brawlers.map(brawler => ({
-                            label: brawler.name,
-                            value: brawler.name
-                        })));
+                        .setLabel('What brawler do you want to boost ?')
+                        .setStyle(TextInputStyle.Short);
 
                     const actualRankInput = new TextInputBuilder()
                         .setCustomId('actual_rank-input')
@@ -192,7 +173,7 @@ client.on('interactionCreate', async interaction => {
         }
     } else if (interaction.type === InteractionType.ModalSubmit) {
         if (interaction.customId === 'brawler-modal') {
-            const brawlerName = interaction.fields.getField('selectBrawler')
+            const brawlerName = interaction.fields.getTextInputValue('selectBrawler')
             const acutalTrophy = interaction.fields.getTextInputValue('actual_rank-input')
             const notes = interaction.fields.getTextInputValue('notes-input') || 'No additional notes';
 
