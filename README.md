@@ -13,6 +13,7 @@
 - niveau de départ dans les tickets
 - afficher les stats des joeurs
 - vérification des nombres pour le 'actual_rank-input'
+- mettre en vente son compte
 
 
 ## Installation
