@@ -60,6 +60,15 @@
         "name": "Ash"
     },
     {
+        "name": "Berry"
+    },
+    {
+        "name": "Angelo"
+    },
+    {
+        "name": "Janet"
+    },
+    {
         "name": "Bea"
     },
     {
@@ -127,6 +136,15 @@
     },
     {
         "name": "Stu"
+    },
+    {
+        "name": "Clancy"
+    },
+    {
+        "name": "Lily"
+    },
+    {
+        "name": "Melody"
     },
     {
         "name": "Buster"
@@ -226,8 +244,5 @@
     },
     {
         "name": "Surge"
-    },
-    {
-        "name": "Clancy"
     }
 ]

@@ -13,6 +13,7 @@
 - niveau de départ dans les tickets
 - afficher les stats des joeurs
 - vérification des nombres pour le 'actual_rank-input'
+- mettre en vente son compte
 
 
 ## Installation
@@ -22,13 +23,11 @@
 - discord.js
 - typescript
 - pm2
+- fs
+- path
 
 ### Étapes
 1. Télecharger le dossier à l'aide de la commande <br>`git clone https://github.com/kaliba0/bsbot.git`
 2. Aller dans le dossier : <br>`cd bsbot`
 3. Completer le dossier config.json avec les informations nécessaires : <br> `nano config.json`
 4. Avec pm2, lancer le script main.js <br> `pm2 start main.js --name "[nom_de_votre_bot]"`
-
-
-
-
