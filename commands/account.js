@@ -13,6 +13,9 @@ const addFriendChannelId = process.env.ADD_FRIEND_CHANNEL_ID;
 const ticketChannelId = process.env.TICKET_CHANNEL_ID;
 const devChannelId = process.env.DEV_CHANNEL_ID;
 const antterznUserId = process.env.ANTTERZN_ID;
+const tierCId = process.env.TIERCCHANNEL;
+const tierBId = process.env.TIERBCHANNEL;
+const tierAId = process.env.TIERACHANNEL;
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
@@ -65,6 +68,7 @@ client.on('interactionCreate', async interaction => {
             const price = new TextInputBuilder()
                 .setCustomId('price')
                 .setLabel('Price')
+                .setPlaceholder('Enter only the price (without any symbols)')
                 .setStyle(TextInputStyle.Short)
                 .setRequired(true);
 
@@ -111,7 +115,13 @@ client.on('interactionCreate', async interaction => {
             const trophies = interaction.fields.getTextInputValue('trophies');
             const rank35 = interaction.fields.getTextInputValue('rank35');
             const rank30 = interaction.fields.getTextInputValue('rank30');
-            const description = interaction.fields.getTextInputValue('description') || ''; // Description par défaut vide si non fournie
+            const description = interaction.fields.getTextInputValue('description') || '';
+
+            // Validate that the price is a number
+            if (isNaN(price) || price.trim() === "") {
+                await interaction.reply({ content: 'Please enter a valid number for the price.', ephemeral: true });
+                return;
+            }
 
             const embed = new EmbedBuilder()
                 .setTitle('‼️ A NEW ACCOUNT IS FOR SALE ‼️')
@@ -127,10 +137,8 @@ client.on('interactionCreate', async interaction => {
                 embed.setDescription(description);
             }
 
-            // Utilisez l'image stockée dans la variable globale
             if (client.imageAttachment) {
                 embed.setImage(client.imageAttachment.url);
-                // Supprimez l'image de la variable globale après l'utilisation
                 client.imageAttachment = null;
             }
 
@@ -141,19 +149,30 @@ client.on('interactionCreate', async interaction => {
 
             const row = new ActionRowBuilder().addComponents(button);
 
-            const targetChannel = client.channels.cache.get(accountChannelId);
+            let targetChannelId;
+            const numericPrice = parseFloat(price);
+
+            if (numericPrice <= 100) {
+                targetChannelId = tierCId;
+            } else if (numericPrice > 100 && numericPrice <= 200) {
+                targetChannelId = tierBId;
+            } else {
+                targetChannelId = tierAId;
+            }
+
+            const targetChannel = client.channels.cache.get(targetChannelId);
             if (!targetChannel) {
-                console.error('Salon cible introuvable.');
-                await interaction.reply({ content: 'Le salon cible est introuvable. Veuillez vérifier la configuration.', ephemeral: true });
+                console.error('Target channel not found.');
+                await interaction.reply({ content: 'The target channel is not found. Please check the configuration.', ephemeral: true });
                 return;
             }
 
             await targetChannel.send({ embeds: [embed], components: [row] });
 
-            await interaction.reply({ content: 'Votre récapitulatif a été envoyé dans le salon désigné.', ephemeral: true });
+            await interaction.reply({ content: 'Your account summary has been sent to the designated channel.', ephemeral: true });
         } catch (error) {
-            console.error('Erreur lors de l\'envoi du récapitulatif:', error);
-            await interaction.reply({ content: 'Une erreur s\'est produite lors de l\'envoi du récapitulatif. Veuillez réessayer.', ephemeral: true });
+            console.error('Error sending the summary:', error);
+            await interaction.reply({ content: 'An error occurred while sending the summary. Please try again.', ephemeral: true });
         }
     } else if (interaction.isButton() && interaction.customId === 'buyButton') {
         try {
@@ -204,7 +223,6 @@ client.on('interactionCreate', async interaction => {
                     { name: '<:rank35:1268684199154421891> Ranks 35', value: interaction.message.embeds[0].fields[2].value, inline: true },
                     { name: '<:rank30:1268684339408011365> Ranks 30', value: interaction.message.embeds[0].fields[3].value, inline: true }
                 );
-
 
             // Ajoutez l'image si elle est présente dans l'embed initial
             if (interaction.message.embeds[0].image) {
